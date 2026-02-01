@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import filedialog, messagebox, ttk
 import yt_dlp as youtube_dl
 import os
-import imageio_ffmpeg  # ★追加: これがFFmpegを連れてきてくれる魔法のライブラリ
+import imageio_ffmpeg 
 
 class YouTubeDownloader(tk.Tk):
     def __init__(self):
@@ -15,13 +15,10 @@ class YouTubeDownloader(tk.Tk):
         self.create_widgets()
 
     def create_widgets(self):
-        # --- URL入力 ---
         self.url_label = ttk.Label(self, text="YouTube URL:")
         self.url_label.pack(pady=5)
         self.url_entry = ttk.Entry(self, width=50)
         self.url_entry.pack(pady=5)
-
-        # --- 保存先選択 ---
         self.dir_button = ttk.Button(
             self, text="Choose Download Directory", command=self.choose_directory
         )
@@ -29,7 +26,6 @@ class YouTubeDownloader(tk.Tk):
         self.dir_label = ttk.Label(self, text="")
         self.dir_label.pack(pady=5)
 
-        # --- オプション ---
         self.playlist_var = tk.BooleanVar()
         self.playlist_check = ttk.Checkbutton(
             self, text="Download Playlist", variable=self.playlist_var
@@ -47,7 +43,6 @@ class YouTubeDownloader(tk.Tk):
         self.maxsize_entry = ttk.Entry(self, width=20)
         self.maxsize_entry.pack(pady=5)
 
-        # --- ダウンロードボタン ---
         self.download_button = ttk.Button(self, text="Download", command=self.download)
         self.download_button.pack(pady=20)
 
@@ -64,16 +59,12 @@ class YouTubeDownloader(tk.Tk):
             messagebox.showerror("Error", "URLと保存先を指定してください。")
             return
 
-        # ★ここが革新的！
-        # ライブラリに「FFmpegどこ？」と聞くだけで、絶対パスを返してくれます。
-        # ユーザーがexeを用意する必要はもうありません。
         ffmpeg_path = imageio_ffmpeg.get_ffmpeg_exe()
 
         options = {
             "verbose": True,
             "outtmpl": os.path.join(save_path, "%(title)s.%(ext)s"),
             
-            # ここでライブラリから取得したパスを渡すだけ！
             "ffmpeg_location": ffmpeg_path,
             
             "format": "bestvideo[ext=mp4]+bestaudio[ext=m4a]/bestvideo+bestaudio/best",
